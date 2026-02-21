@@ -1,0 +1,284 @@
+{
+  "name": "Automated Social Media Content Generation",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1vVlm4U2Q0rRFqFQts0ZtXhiHg-Er9H_mAYhhgiGf2Dk",
+          "mode": "list",
+          "cachedResultName": "Social media content generation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vVlm4U2Q0rRFqFQts0ZtXhiHg-Er9H_mAYhhgiGf2Dk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vVlm4U2Q0rRFqFQts0ZtXhiHg-Er9H_mAYhhgiGf2Dk/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        -32
+      ],
+      "id": "b95b54f6-cd50-4d5f-a218-1a0772e93b99",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "BSnpWNYv7KFCr1Ep",
+          "name": "Google Sheets Trigger account 2734"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=System: \"You are a social media strategist       with expertise in content adaptation\"\n\n  User: \"Analyze this article and create a          summary that:\n  1. Captures the 3 most important insights\n  2. Includes any actionable advice or tips\n  3. Maintains the original tone and perspe    ctive\n  4. Highlights implications for the targe      t audience\n  5. Stays under 200 words for social medi      a adaptation\n                                            Article: {{ $json.newslinks }}\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -32,
+        -32
+      ],
+      "id": "610f5132-c522-427c-a7e7-80aedb1a78d2",
+      "name": "Summarize News Article"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        192
+      ],
+      "id": "43a43be4-69fb-4168-bf7b-576c6a624c05",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "b4ILve4xCYaCeZ1m",
+          "name": "Google Gemini(PaLM) Api account 6872"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Assume the role of an industry expert and draft a LinkedIn post discussing key points from a news article relevant to artificial intelligence. The post should provide insightful analysis, connect with current industry trends, and encourage professional engagement or discussion. Highlight any notable implications for the industry. Since LinkedIn supports detailed posts, ensure it is informative and structured. Include a professional call to action. Here's a summary of the article:  {{ $json.newslinks }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        336,
+        -240
+      ],
+      "id": "16b2aaae-51d0-41fe-93d0-1b80c3cbea96",
+      "name": "Generate Linkdin Post"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        336,
+        -32
+      ],
+      "id": "956a9bb1-e7b8-48c6-b045-70dcff92f03d",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "b4ILve4xCYaCeZ1m",
+          "name": "Google Gemini(PaLM) Api account 6872"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "person": "3qBx0Dn_ON",
+        "text": "={{ $json.text.slice(0,2000) }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        768,
+        -240
+      ],
+      "id": "5f090a56-ca26-4917-ba2f-7f74a3524144",
+      "name": "Create a post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "E6ZZ3X8p3sN8d5ty",
+          "name": "LinkedIn account 1948"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Draft an X post as an AI industry expert analyzing a key news article. The post should:\n\nDeliver sharp insights on the article's main points\nConnect to current AI trends\nSpark discussion with a thought-provoking question\nBe punchy and engaging\nEnd with a clear call to action\nLength: Within 30 words\n\nFocus: What matters most to the AI community. Make every word count.\nArticle summary:{{ $json.text.slice(0,2000) }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        320,
+        224
+      ],
+      "id": "09e3ad9b-fa98-4191-925b-4b4bf38ad3ac",
+      "name": "Generate X/Twitter PostContent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        320,
+        480
+      ],
+      "id": "ebe18e13-ef9e-4dd7-b7c9-de7b73e905c1",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "b4ILve4xCYaCeZ1m",
+          "name": "Google Gemini(PaLM) Api account 6872"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        672,
+        224
+      ],
+      "id": "68c8910b-fb0a-4509-bcff-eb411fd54e81",
+      "name": "Create Tweet",
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "mFOYgGN2gWuYpdxu",
+          "name": "X account 821"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Summarize News Article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarize News Article",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize News Article": {
+      "main": [
+        [
+          {
+            "node": "Generate Linkdin Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate X/Twitter PostContent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Linkdin Post",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Linkdin Post": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate X/Twitter PostContent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate X/Twitter PostContent": {
+      "main": [
+        [
+          {
+            "node": "Create Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "98794e93-5f2c-4ec4-ab61-84d4ffc910f6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "969257b09ad2942bbaff2e2288304f4969030574d109cdeca05bf11f630884df"
+  },
+  "id": "BKYcE8Ec3IyVSSsE",
+  "tags": []
+}
